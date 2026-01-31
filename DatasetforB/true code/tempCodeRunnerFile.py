@@ -1,1 +1,1 @@
-global_optimum_analysis
+adaptive_allocation_trend
