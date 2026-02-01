@@ -1,1 +1,1 @@
-adaptive_allocation_trend
+cost_dynamics_intersection
