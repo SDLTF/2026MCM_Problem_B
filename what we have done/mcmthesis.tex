@@ -1,0 +1,894 @@
+\documentclass[12pt]{mcmthesis} \usepackage{titlesec} \titlespacing*{\section}{0pt}{0pt}{0pt} \setlength{\parskip}{0pt}  % 文档类型
+\mcmsetup{CTeX = false,   % 使用 CTeX 套装时，设置为 true
+tcn = \textcolor{red}{202600126},   % 队伍控制号
+problem =\textcolor{red}{B},  % 选题
+sheet = true,   % sheet页
+titleinsheet = true,   % sheet页显示标题
+keywordsinsheet = true,  % sheet页显示关键词
+titlepage = false,   % 标题页
+abstract = true  % 摘要
+}
+
+\usepackage{palatino}  % 帕拉提诺体字体宏包
+\usepackage{lipsum}  % 导入生成段落的宏包
+\usepackage[hyperref=true,style=ieee]{biblatex}  % biblatex参考文献宏包
+\addbibresource{ref.bib}  % 添加引用文献bib源
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{multicol}
+\usepackage{tocloft}
+
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
+\captionsetup{font=footnotesize,skip=1.5pt}
+
+\setlength{\jot}{2pt}
+
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{4pt plus 2pt minus 2pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 2pt}
+
+\titlespacing*{\section}{0pt}{2px}{2px}
+\titlespacing*{\subsection}{0pt}{2px}{2px}
+\titlespacing*{\subsubsection}{0pt}{2px}{2px}
+
+\setlength{\cftbeforesecskip}{0pt}
+\usepackage{multicol}
+\renewcommand*{\bibfont}{\footnotesize}
+\setlength{\bibitemsep}{0pt}
+
+
+\title{1–25–60: A Resilient Hybrid Plan for Lunar Megascale Supply}  % 文章标题
+\author{\small Team 202600126}  % 作者，开启标题页才会显示
+\date{\today}  % 日期，开启标题页才会显示
+\memoto{MCM office}  % 建议书目标
+\memofrom{MCM Team 202600126}  % 建议书来源
+\memosubject{MCM}  % 建议书主题
+\memodate{\today}  % 建议书日期
+\usepackage{enumitem}
+\setlist[enumerate]{nosep} % 或者使用 itemsep=2pt
+\setlist[itemize]{nosep}   % 同时修改无序列表
+
+\usepackage{tikz}
+\usetikzlibrary{mindmap,positioning,shadows.blur,backgrounds}
+\usepackage{graphicx}
+
+
+
+\begin{document}  % 文档
+
+\setlength\abovedisplayskip{5pt}
+\setlength\belowdisplayskip{5pt}
+\setcounter{tocdepth}{2} % 显示 section
+
+
+\begin{abstract}
+\noindent
+A 100{,}000-person lunar colony starting in 2050 requires transporting roughly
+\textbf{100 million metric tons} from Earth to the Moon. We compare three architectures: (i) a space-elevator-only system (three ``Galactic Harbors''), (ii) an Earth-based rocket-only system, and (iii) a hybrid system, all under discrete trans-lunar injection (TLI) launch-window constraints and evolving orbital risk.
+
+\vspace{0.35\baselineskip}
+To connect long-term planning with window-limited operations, we develop an
+\textbf{Integrated Logistics Model (ILM)} that couples a \textbf{continuous elevator baseload} with \textbf{discrete rocket surges} using a pulse--integral representation.
+Rocket capacity growth is modeled with a \textbf{logistic maturity curve}; unit costs decline via \textbf{Wright's law} while being offset by an environmental penalty.
+
+\vspace{0.35\baselineskip}
+System reliability is endogenized through \textbf{debris-driven risk feedback}
+and an engineering throughput-loss term capturing tether-oscillation constraints.
+We evaluate robustness using \textbf{Monte Carlo} launch-scrub simulations and a
+\textbf{black-swan outage stress test}.
+
+\vspace{0.35\baselineskip}
+We minimize a normalized \textbf{Global System Stress Index (GSSI)} that aggregates cost, schedule pressure, environmental burden, and operational risk.
+
+\vspace{0.35\baselineskip}
+The results show that single-mode strategies are dominated: the rocket-only option becomes financially and environmentally prohibitive (\textbf{>$22$T}), while the elevator-only option is fragile, a single severe debris event can trigger an extended service interruption.
+
+\vspace{0.35\baselineskip}
+The best-performing solution is a hybrid \textbf{``1--25--60'' strategy}: a \textbf{60-year} build out with \textbf{25 launch sites} as the minimum redundancy level.
+
+\vspace{0.35\baselineskip}
+This plan achieves a total cost of \textbf{\$17.16T}, reduces the lifecycle footprint by \textbf{29.2\%}, and achieves \textbf{a survival probability > 99.5\%}.
+Under a catastrophic elevator outage, 25 sites sustain the system to \textbf{Day 82},
+whereas a 10-site baseline depletes reserves by \textbf{Day 45}.
+
+\vspace{0.65\baselineskip}
+\begin{keywords}
+hybrid logistics; space elevator; launch-window scheduling;
+pulse--integral model; Wright's law; debris-risk feedback; Monte Carlo resilience;
+GSSI; 1--25--60 strategy.
+\end{keywords}
+\end{abstract}
+
+\maketitle  % 生成sheet页
+
+
+\tableofcontents
+
+\newpage  % 开始新的一页
+\section{Introduction}
+
+
+\begin{center}
+\vspace{-0.3em}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/mindmap.png}
+\caption*{a mindmap of our solution}{Concept map of our end-to-end modeling pipeline and how each module supports the required scenario comparisons and resilience analyses.}
+\end{figure}
+
+
+
+\end{center}
+
+\subsection{Background}
+By 2050, establishing a 100,000-resident lunar colony requires the transport of $10^8$ metric tons (MT) of cargo. This challenge involves a \textbf{structural trade-off} between two paradigms:
+
+\begin{itemize}[nosep]
+\item \textbf{Space Elevator (Anchor):} High-efficiency, low-marginal-cost transport limited by rigid capacity ($\sim$537,000 MT/year) and debris vulnerability.
+\item \textbf{Rocket Fleet (Surge):} Agile, high-bandwidth delivery constrained by heavy environmental and capital expenditures.
+\end{itemize}
+
+We employ a \textbf{Multi-Objective Dynamic Programming Model} that integrates \textit{Wright’s Law} (technological learning) and \textit{Kessler Syndrome} (orbital degradation). Our framework seeks the Pareto-optimal equilibrium between total cost ($Z$), project duration ($T$), and environmental impact ($E$).
+
+\begin{figure}[htbp]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{figures/kehuantu2_20260131144753_1199_22(1).jpg}
+\caption{Space Elevator Logistics}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{figures/kuhuan2_2026-02-01_211719_545(1).jpg}
+\caption{Rocket Surge Capacity}
+\end{minipage}
+\end{figure}
+\subsection{Restatement of the Problem}
+We develop a robust framework to optimize lunar logistics by addressing four core objectives:
+\begin{enumerate}[nosep]
+\item \textbf{Scenario Optimization:} Compare single-mode (elevator/rocket) vs. hybrid pathways to identify the Pareto-optimal configuration.
+\item \textbf{Risk Quantification:} Evaluate the impact of tether oscillations, orbital debris, and launch failures on cost and schedule.
+\item \textbf{Resource Stability:} Model the lunar water cycle and recycling efficiency to ensure colony survival.
+\item \textbf{Ecological Governance:} Quantify environmental impacts and propose mitigation strategies for the Earth-Moon corridor.
+\end{enumerate}
+
+\section{Analysis of the Problem}
+\subsection{Foundational Assumptions}
+To maintain physical fidelity while ensuring model tractability, we establish the following:
+\begin{itemize}[nosep]
+\item \textbf{Technological Baseline:} Rocket costs and performance reflect 2050 heavy-lift standards (Starship-class) for TLI maneuvers.
+\item \textbf{Learning Dynamics:} Marginal costs follow \textit{Wright's Law}, decaying with cumulative frequency toward a propellant-defined floor.
+\item \textbf{Financial Decoupling:} Launch site CAPEX is independent of OPEX, enabling modular expansion of $N_{\text{sites}}$.
+\item \textbf{Feedback Loops:} Structural integrity is governed by \textit{Kessler Syndrome} dynamics, with maintenance rates scaling with automation.
+\end{itemize}
+
+\subsection{Description of Key Parameters}
+
+\subsubsection{Definition of Key Parameters}
+The primary notations and decision variables utilized in our model are summarized in Table 1.
+
+\begin{table}[htbp]
+\centering
+\caption{Definitions and Benchmark Values of Key Parameters}
+\label{tab:parameters}
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Symbol} & \textbf{Definition} & \textbf{Notes/Baseline} \\
+\midrule
+\rowcolor{gray!10} \multicolumn{3}{l}{\textit{System Parameters}} \\
+$M_{\text{total}}$ & Initial material demand & Fixed constraint \\
+$C_E$ & Elevator unit cost & ISEC estimate \\
+$C_R(n)$ & Rocket unit cost & Initial cost \$2,500/kg, decaying with learning curve. \\
+$C_{R,\text{floor}}$ & Rocket cost floor & Adjusted value (includes in-orbit refueling cost) \\
+$K_E$ & Elevator annual capacity & Sum of three Galactic Harbors \\
+$N_{\text{sites}}$ & Number of launch sites & Optimization decision variable \\
+$\alpha(t)$ & Elevator efficiency factor & Subject to orbital debris impact \\
+$\beta(t)$ & Rocket efficiency factor & Subject to physical turnaround and weather constraints \\
+\midrule
+\rowcolor{gray!10} \multicolumn{3}{l}{\textit{Efficiency \& Environmental Variables}} \\
+$x_E(t)$ & Elevator annual transport volume & Decision variable \\
+$x_R(t)$ & Rocket annual transport volume & Decision variable \\
+$T$ & Total project duration & Decision variable \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Baseline Numerical Values and Data Sources}
+\label{tab:baseline_values}
+\small
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Parameter} & \textbf{Baseline / Range} & \textbf{Source / Rationale} \\
+\midrule
+Total transport requirement $M_{\mathrm{total}}$ & $10^8$ metric tons & Competition problem statement (fixed mission constraint). \\
+Elevator capacity per Harbor & $179{,}000$ t/yr & Competition problem statement. \\
+Number of Galactic Harbors & $3$ & Competition problem statement. \\
+Total elevator annual capacity $K_E$ & $5.37\times10^5$ t/yr & Three Harbors combined (derived from stated per-Harbor capacity). \\
+Rocket payload per launch & 100--150 t/launch & SpaceX Starship payload specification. \cite{spacex_starship} \\
+Historical launch cadence (calibration) & 2012--2024 time series & Public launch-history datasets used for trend calibration. \cite{csis_f9_history,wiki_f9_launches} \\
+Scrub rate $p_{\mathrm{scrub}}$ & $\mathcal{N}(0.16,0.05^2)$ (scenario) & Treated as a stochastic operational factor; parameters chosen to match typical delay frequencies observed in launch-history statistics. \cite{elonx_spacex_stats,csis_f9_history} \\
+Learning rate (Wright's Law) $LR$ & $0.85$ (scenario) & Learning-curve assumption for cost decline with cumulative production/launches. \cite{humanprogress_wrights_law,scanx_cost_reduction} \\
+Orbital debris trend (environment input) & 2025 environment baseline & Orbital debris environment assessment used to anchor debris-risk scenarios. \cite{esa_space_env_2025} \\
+Elevator survivability considerations & --- & Engineering study used to justify vulnerability and downtime assumptions. \cite{isec_elevator_survivability} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+\subsubsection{Parameter Estimation and Calibration}
+
+\begin{itemize}
+\item \textbf{Rocket Cost Dynamics:} Based on Wright’s Cumulative Average Model with a learning rate $LR=85\%$, we model the cost evolution as:
+\begin{equation}
+C_R(n) = \max \left( C_{\text{floor}}, \ C_{\text{initial}} \cdot n^{\log_2(0.85)} \right)
+\end{equation}
+The floor is set at \$10M per launch to reflect the overhead of 4–5 in-orbit refueling operations required for Earth-Moon transfer trajectories.
+
+\item \textbf{Elevator Operational Availability ($\alpha$):} The effective efficiency is a net result of debris-induced downtime and autonomous repair speed:
+\begin{equation}
+\alpha(t) = 1 - \frac{\text{RepairTime}(t) + \text{MaintTime}}{365}
+\end{equation}
+Initial availability is calibrated to 91.8\% in 2050, considering current ESA debris projections.
+
+\item \textbf{Rocket Cadence Maturity ($\beta$):} Using SpaceX (2012–2024) as a data anchor, we apply a logistic S-curve to model throughput saturation:
+\begin{equation}
+\beta_{\text{cadence}}(t) = \frac{L}{1 + \mathrm{e}^{-k(t - t_{\text{inflection}})}}
+\end{equation}
+where $L=500$ represents the physical ceiling of ground support infrastructure.
+\end{itemize}
+
+\section{Data Processing and Parameter Estimation}
+To ensure the scientific rigor of the logistics network optimization model, this chapter quantitatively calibrates the core dynamic parameters influencing the Earth-Moon logistics system based on historical aerospace data and physical environment predictions. We focus primarily on the maturity trend of rocket technology, cost evolution under economies of scale, and the degradation characteristics of the space elevator in the complex space environment.
+
+\subsection{Rocket Efficiency: Technology Maturity Model Based on Logistic growth fitting}
+The launch cadence of rocket systems is constrained by launch site turnover efficiency, vehicle reusability speed, and technical proficiency.
+
+\subsubsection{Data Sources and Processing}
+We collected real launch data from SpaceX between 2012 and 2024 as a sample. This data encompasses the evolution from the early Falcon 9 period to the Starship testing phase. By smoothing anomalous years (e.g., early technological bottleneck periods), we extracted a time series describing payload capacity growth.
+
+\subsubsection{Logistic growth Fitting}
+Considering the upper limits of physical infrastructure (such as launch pads, propellant loading speed), we employ a logistic S-curve growth model to describe the annual payload capacity $\beta_{\text{cadence}}(t)$ of a single launch site:
+\[
+\beta_{\text{cadence}}(t) = \frac{L}{1 + \mathrm{e}^{-k(t - t_0)}}
+\]
+
+\noindent
+We define a \textbf{saturation ceiling} ($L$) of 500 launches per year, dictated by the physical limits of ground support infrastructure and Starship-class design parameters. As shown in Figure 3, the fitted curve predicts that by 2050, single-site throughput will stabilize at \textbf{400–450} launches annually, signaling that rocket technology has reached a mature, high-cadence plateau phase.
+
+\begin{figure}[h]
+
+\centering%居中
+\includegraphics[width=0.9\textwidth]{figures/parameter_estimation_beta_fixed_v4.png}%图片名字，插入
+\caption{The S-curve and exponential models project launch cadence and reliability based on historical data, establishing the 2050 performance baseline.}%设置标题
+\end{figure}
+
+\subsection{Economic Equilibrium: Wright's Law and Environmental Tax}
+
+\subsubsection{Learning Curve and Marginal Cost (Wright's Law)}
+To model economies of scale, we apply \textit{Wright's Law} to the unit transport cost $C_{u}$:
+\begin{equation}
+C_{u}(q) = C_{1} \cdot q^{-b}, \quad b = -\log_{2}(f)
+\end{equation}
+where $q$ is the cumulative volume and $f$ is the learning rate (0.85). This ensures that as total delivery scales toward $10^8$ MT, unit costs decrease non-linearly through experience accumulation.
+
+\subsubsection{Non-linear Environmental Penalty Model}
+To quantify ecological externalities, we define an environmental penalty function $E(f)$ that accounts for stratospheric and orbital damage:
+\begin{equation}
+E(f) = \eta \cdot \left(\frac{f}{f_{\text{crit}}}\right)^{p}, \quad p \approx 2.0
+\end{equation}
+Here, $f_{\text{crit}}$ is the atmospheric self-cleaning threshold. When launch frequency $f$ exceeds this limit, remediation costs escalate quadratically, counteracting the learning curve's dividends. This economic trade-off is illustrated in Figure .
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/cost_dynamics_intersection.png}
+\caption{The economic trade-off between Wright's Law dividends and quadratic environmental penalties.}
+\end{figure}
+
+\subsection{Space Elevator Degradation: Environmental Feedback Loop}
+Unlike the improving efficiency of rocket systems, the space elevator—a 100,000 km static structure—is increasingly vulnerable to the space environment.
+
+\subsubsection{Impact of the Kessler Syndrome}
+As the density of low Earth orbit (LEO) debris rises, we define an availability factor $\alpha(t)$ to represent the elevator's annual operational uptime.
+
+\subsubsection{Efficiency Decay Equation}
+The evolution of $\alpha(t)$ is modeled by the interplay between escalating impact frequencies and advancing repair capabilities:
+\begin{equation}
+\alpha(t) = 1 - \frac{\lambda_0(1 + r_d)^{t - t_0} \times \tau_0(1 - r_s)^{t - t_0}}{365}
+\end{equation}
+where $r_d = 1.5\%$ is the debris growth rate and $r_s = 0.5\%$ is the repair technology progress rate.
+
+\paragraph{Divergent Trend Analysis}
+As illustrated in Figure 5, the elevator's efficiency (red line) gradually declines due to environmental degradation, while rocket efficiency (green line) continues to ascend. This divergence necessitates a "hybrid strategy": increasing the rocket's share in later stages to hedge against the elevator's rising downtime risk.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/alpha_beta_divergence.png}
+\caption{Divergent efficiency trends between the space elevator ($\alpha$) and rocket fleets ($\beta$).}
+\end{figure}
+\subsection{Reliability and Risk Parameter Calibration}
+To facilitate Monte Carlo stress testing, we calibrate the system's risk distribution using historical benchmarks:
+\begin{itemize}
+\item \textbf{Vehicle Reliability:} The 2050 mission success rate is projected at 99.98\%.
+\item \textbf{Disruptive Factors:} Stochastic downtime (e.g., weather, debris avoidance) follows a Poisson distribution, with a baseline unplanned downtime of 14 days per annum.
+\end{itemize}
+
+\section{The Integrated Logistics Model: A Collaborative Dynamic Framework}
+This chapter introduces the Dynamic Hybrid Logistics Model (ILM), designed to resolve the fundamental contradictions between scale, timing, and system resilience.
+
+\subsection{Dual-Mode Synergy \& Logic}
+Rather than a simple summation of capacities, we model the interaction as a "baseline-compensation" synergistic system:
+\begin{itemize}
+\item \textbf{The Space Elevator (Steady-State Anchor):} Provides high-efficiency, zero-emission 24/7 transport as the system's "baseload". Its primary bottleneck is a lack of instantaneous elasticity.
+\item \textbf{The Rocket Fleet (Agile Surge Capacity):} Functions as a "safety valve" and "bandwidth amplifier". By utilizing specific orbital windows, the fleet counteracts logistics backlogs and provides the surge capacity required to maintain project timelines
+\end{itemize}
+\subsection{Mathematical Formulation: Coupling Discrete Pulses and Continuous Flow}
+The total cargo throughput $M_{\text{total}}$ is modeled as a non-linear pulse-integral function over the project horizon $T$:
+\begin{equation}
+M_{\text{total}} = \int_{2050}^{2050 + T} \Phi_{E}\alpha(t)\eta_{\text{stab}}(t)\mathrm{d}t+\sum_{k=1}^nQ_k(N)
+\end{equation}
+
+where:
+\begin{itemize}
+\item $\Phi_E$ is the nominal elevator throughput (t/year),
+\item $\alpha(t)\in[0,1]$ is the time-varying operational availability,
+\item $\eta_{\text{stab}}(t)\in (0, 1]$ captures throughput loss due to tether stability constraints,
+\item $Q_k(N)$ is the total mass delivered by rockets in the $k$-th launch window (t/window), aggregated over $N$ launch sites,
+\item $n\approx \lfloor 12.8 T\rfloor $ is the number of synodic-month planning windows over the project horizon.
+\end{itemize}
+\subsection{Physical Bottlenecks and Hard Constraints}
+To enhance engineering fidelity, the model incorporates rigid physical constraints governing deep-space logistics:
+
+\subsubsection{Orbital Windows and Discretized Queuing Pressure}
+Rocket logistics are influenced by orbital mechanics and operational constraints. Rather than assuming launches are only possible at a single instant, we discretize operations into synodic-month planning windows ($\tau \approx 28.5 \text{days}$), within which launch efficiency varies due to mission geometry, pad scheduling, and propellant logistics. This discretization captures the real-world “batching” behavior of high-cadence launch systems without implying that launches are physically impossible outside the window.
+
+\textbf{Infrastructure Requirement:} This extreme Peak-to-Average Ratio (PAR) necessitates the deployment of $N=25$ launch sites. Simulations indicate a critical threshold of $N < 18$, below which "window period congestion" triggers an irreversible cargo backlog in LEO.
+
+\subsubsection{Node Storage and Buffering Dynamics}
+We employ a buffer level equation to simulate inventory dynamics at the L1 transfer station:
+\begin{equation}
+\frac{\mathrm{d}B(t)}{\mathrm{d}t} = \Phi_{in}(t) - \Phi_{out}(t)
+\end{equation}
+The 25-site configuration ensures that during non-window periods, the buffer level $B(t)$ remains above the critical survival baseline required for lunar operations.
+
+\subsubsection{Payload Tolerance Classification}
+Cargo is prioritized based on physical tolerances and economic logic:
+\begin{itemize}
+\item \textbf{Tier 1 (Sensitive):} Precision instruments are allocated 100\% to the space elevator to leverage its low-acceleration, high-stability transport environment.
+\item \textbf{Tier 2 (Standard):} Construction materials and propellant are dynamically distributed between modes based on cost-optimal principles derived from Wright's Law.
+\end{itemize}
+
+\subsection{Simulation Results: Pulsed Logistics and "Crossover Point" Analysis}
+
+\paragraph{Analysis and Insights}
+The simulation reveals a strategic "paradigm shift" in the logistics framework:
+\begin{itemize}
+\item \textbf{Phase I (Initial):} Elevator utilization exceeds 95\%, serving as the carbon-neutral backbone of early-stage construction.
+\item \textbf{Phase II (Transition):} As rocket reliability $\beta(t)$ matures and costs decline, the fleet absorbs over 60\% of the "incremental demand."
+\item \textbf{Resilience Verification:} Upon simulated elevator failure, the 25-site surge capacity—modeled via a Heaviside step function $H$—restores the cargo gap within 82 days, validating the system's survival resilience.
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/adaptive_allocation_trend.png}
+\caption{Adaptive capacity allocation and the strategic "paradigm shift" between space elevator baseload and rocket surge capacity over the project lifecycle.}
+\end{figure}
+\section{Environmental \& Economic Optimization: Finding the Global Optimum}
+This chapter employs a quantitative framework to resolve the logistics \textit{trilemma}: delivering 100 million tons while balancing economic efficiency, environmental footprint, and system resilience.
+
+\subsection{Optimization Objectives and Metrics}
+We define the \textbf{Global System Stress Index (GSSI)} as a multi-objective metric derived from the non-linear weighting of three dimensions:
+
+\begin{itemize}
+\item \textbf{Economic Pressure ($P_{\text{eco}}$):} Aggregates CAPEX, OPEX, and learning-curve-driven marginal costs.
+\item \textbf{Environmental Load ($P_{\text{env}}$):} Quantifies lifecycle emissions and stratospheric disturbance from high-frequency launches.
+\item \textbf{Operational Risk ($P_{\text{risk}}$):} Evaluates elevator integrity under debris impact and potential cargo backlogs.
+\end{itemize}
+
+\paragraph{Normalization and weighting.}
+Each dimension is computed as a raw metric over a candidate strategy (scenario a/b/c and design variables) and then mapped to a comparable scale via min--max normalization:
+\[
+\widehat{P}_{k}=\frac{P_{k}-P_{k}^{\min}}{P_{k}^{\max}-P_{k}^{\min}}, \qquad k\in\{\text{eco},\text{env},\text{risk}\}.
+\]
+The overall index is a weighted sum
+\[
+\mathrm{GSSI}=w_{\text{eco}}\widehat{P}_{\text{eco}}+w_{\text{env}}\widehat{P}_{\text{env}}+w_{\text{risk}}\widehat{P}_{\text{risk}},\qquad
+w_{\text{eco}}+w_{\text{env}}+w_{\text{risk}}=1,
+\]
+where we use equal weights by default ($w_{\text{eco}}=w_{\text{env}}=w_{\text{risk}}=\tfrac{1}{3}$) to avoid encoding a subjective preference into the baseline results.
+
+\paragraph{Weight sensitivity (``not a tuned score'').}
+To ensure conclusions are not an artifact of a specific weighting, we perturb each weight by $\pm 20\%$ (renormalized to sum to one) and re-evaluate the ranking. The recommended \emph{hybrid} family remains Pareto-dominant, and the ``golden balance point'' stays near the 60-year elbow; only extreme single-objective preferences (e.g., $w_{\text{env}}\rightarrow 0$ or $w_{\text{risk}}\rightarrow 0$) cause the optimum to collapse toward a single-mode solution.
+
+All cost figures are order-of-magnitude planning estimates intended for scenario comparison; absolute values may shift under alternative CAPEX assumptions, while the dominance ranking across scenarios is robust under sensitivity tests.
+\subsection{The "L-Curve" and Strategic Optimization}
+We utilize the GSSI to identify the global optimum for the project timeline. As illustrated in the following figures, the decision-making process is governed by two competing constraints:
+
+\begin{enumerate}
+\item \textbf{The Penalty of Speed (Figure 7):} Accelerating the mission significantly elevates the GSSI, so short-term intensive launches trigger quadratic environmental taxes and increase the probability of "window congestion."
+\item \textbf{The Golden Balance Point (Figure 8):} The 60-year horizon emerges as the optimal "L-Curve" elbow, where cumulative cost and ecological load reach their minimum intersection, defining our "1-25-60 Strategy."
+\end{enumerate}
+
+\begin{figure}[htbp]
+\centering
+\begin{minipage}{0.40\textwidth}
+\centering
+\includegraphics[width=\textwidth]{figures/cost_env_optimization_v2_fixed_v4.png}
+\caption{GSSI vs. Project Duration: The Penalty of Speed.}
+\label{fig:speed_penalty}
+\end{minipage}
+\hfill
+\begin{minipage}{0.56\textwidth}
+\centering
+\includegraphics[width=\textwidth]{figures/true_l_curve.png}
+\caption{Identification of the 60-year "Golden Balance Point".}
+\label{fig:golden_balance}
+\end{minipage}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\small
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{6pt}
+\caption{Qualitative drivers of the optimal timeline (why the elbow occurs near 60 years).}
+\label{tab:timeline_drivers}
+\begin{tabular}{p{3.6cm} p{3.4cm} p{3.4cm} p{3.4cm}}
+\hline
+\textbf{Driver} & \textbf{Too fast (short horizon)} & \textbf{Near elbow ($\sim$60 yr)} & \textbf{Too slow (long horizon)} \\
+\hline
+Window congestion / surge stress & $\uparrow\uparrow$ (many launches concentrated in few windows) & Controlled via adaptive quotas & Low per-year, but persistent operations \\
+Cost (learning vs. intensity) & High marginal cost from intensive surge & Learning benefits realized without extreme surge & Cumulative O\&M dominates savings \\
+Environmental burden (atmosphere + debris) & $\uparrow\uparrow$ due to quadratic penalties and higher debris injection & Moderated by hybrid allocation & $\uparrow$ from long exposure and debris feedback \\
+Operational risk (single-point + aging) & Elevated failure consequence due to low slack & Redundancy + slack maximize survival & Aging and cumulative hazard increase \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\small
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{6pt}
+\caption{Headline outcomes across the three mandated scenarios (model outputs).}
+\label{tab:scenario_headlines}
+\begin{tabular}{p{2.8cm} p{2.4cm} p{2.6cm} p{6.4cm}}
+\hline
+\textbf{Scenario} & \textbf{Total cost} & \textbf{Env.\ index$^\dagger$} & \textbf{Resilience / key takeaway} \\
+\hline
+Rockets only & $>\$22$T & 1.000 & Flexible surge but prohibitive externalities; dominated in cost--environment trade-offs. \\
+Elevator only & Scenario-dependent$^\ddagger$ & N/A$^\ddagger$ & Single-point vulnerability: a debris-impact scenario can induce a $\sim$2-year logistics blackout. \\
+Hybrid (best) & $\$17.26$T & 0.708 & Robust under failures: with 25-site surge mobilization, net supply recovers by Day 82; constrained to 10 sites, reserves fail by Day 45. \\
+\hline
+\end{tabular}
+
+\vspace{0.25em}
+\footnotesize{$^\dagger$Normalized environmental burden with rockets-only as baseline (1.000). \\
+$^\ddagger$Elevator-only totals are omitted because CAPEX/O\&M assumptions vary widely by design; our elevator-only conclusion is driven by fragility (blackout risk), not budget optimality.}
+\end{table}
+
+\subsection{Long-Term Degradation: The Limits of Extension}
+If "fast" is constrained by physical throughput, then "slow" is limited by the infrastructure lifecycle. An indefinite extension of the project duration is not a viable strategy due to cumulative environmental and structural risks.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/global_optimum_analysis_fixed_v4.png}
+\caption{The GSSI "Sweet Spot" analysis: Identifying the optimal balance between speed-induced pressure and long-term infrastructure fatigue.}
+\end{figure}
+\paragraph{Analysis and Insights}
+The GSSI exhibits a "Risk Basin" rebounding beyond a 70-year horizon, driven by three limiting factors:
+\begin{itemize}
+\item \textbf{Cumulative Risk:} Sustained exposure to orbital debris increases the elevator's failure probability beyond safety thresholds.
+\item \textbf{Economic Fatigue:} Escalating long-term maintenance (OPEX) eventually offsets economies of scale and delays ISRU-driven self-sufficiency.
+\item \textbf{Operational Window:} A finite "survival window" exists, outside of which system complexity and mission risks become uncontrollable.
+\end{itemize}
+
+\subsection{Environmental Impact Comparison Across Scenarios}
+
+\subsection{Environmental Trade-off Analysis}
+
+Table 4 summarizes key environmental outputs from our integrated model. The hybrid scenario’s GSSI environmental score (0.708) reflects a 29.2\% reduction from the rockets‑only baseline, achieved by actively trading marginal debris growth (+180 \% vs. +450\%) against rocket‑driven emissions. The elevator‑only option, while low‑emission, is excluded due to its high vulnerability to debris‑ and oscillation‑induced downtime—risks that the hybrid architecture mitigates by using the 25‑site rocket fleet as a dynamic buffer. Consequently, the 25‑site requirement emerges not only from launch‑window and outage‑recovery constraints, but also from the need to compensate for chronic throughput losses predicted by the tether‑oscillation model (Section 6.2).
+\subsection{Establishment of the "1-25-60 Strategy"}
+By minimizing the GSSI, the model converges to a robust optimal solution termed the \textbf{"1-25-60 Strategy"}:
+
+\begin{table}[htbp]
+\centering
+\caption{Environmental Metrics Across Scenarios (Normalized to Rockets–Only)}
+\label{tab:env_simple}
+\begin{tabular}{p{3.2cm} c c c p{3.2cm}}
+\toprule
+\textbf{Metric} & \textbf{Rockets} & \textbf{Elevator} & \textbf{Hybrid} & \textbf{Basis / Model} \\
+\midrule
+GSSI Env. Component ($\widehat{P}_{\text{env}}$) & 1.000 & 0.412 & 0.708 & Eq. (5) normalization (Sec. 5.1) \\
+LEO Debris Growth (60 yr) & +450\% & +15\% & +180\% & Kessler Eq. (13) simulation \\
+Stability Throughput Loss ($\max \Delta \eta_{\text{stab}}$) & – & 15\% & compensated & Oscillation model Eq. (11)–(12) \\
+Min. Sites for Viability ($N_{\text{sites}}$) & – & – & 25 & PAR + outage + oscillation constraints \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{itemize}
+\item \textbf{100 Million Tons:} Represents the fixed core objective for lunar colonization.
+\item \textbf{25 Launch Sites:} The minimum infrastructure required to manage TLI window constraints and provide "life insurance" against elevator failure. This redundancy ensures uninterrupted logistics during catastrophic disruptions.
+\item \textbf{60-Year Duration:} The Pareto-optimal horizon that balances expenditure, carbon emissions, and infrastructure integrity.
+\end{itemize}
+
+\textbf{Conclusion:} Within this 60-year framework, the system achieves a \textbf{29.2\% reduction} in environmental footprint and caps the total budget at \textbf{\$17.26 Trillion}. This solution remains stable under $\pm 10\%$ fluctuations in ISRU capacity, demonstrating superior decision elasticity.
+
+\section{Model Refinement}
+To bridge the gap between theoretical optimization and engineering reality, this chapter incorporates discrete celestial mechanics constraints and adaptive feedback loops into the primary model.
+
+\subsection{Adaptive Pulsed Logistics: Macro Trends and Micro Windows}
+Logistics optimization over the 60-year horizon is treated as a \textbf{discrete pulse process} rather than a continuous flow. We introduce an adaptive scheduling mechanism governed by the synodic lunar cycle.
+
+\subsubsection{Mathematical Description of Pulse Dynamics}
+Rocket throughput is constrained by Earth-Moon transfer orbit (TLI) phase windows. We redefine the total mass flow $\Phi_{\text{total}}(t)$ using a Dirac-delta pulse formulation:
+\begin{equation}
+\Phi_{\text{total}}(t) = (1 - \omega(t)) \Phi_E \alpha(t) + \omega(t) \Phi_R(t),
+\end{equation}
+where:
+\begin{itemize}
+\item $\Phi_R(t)$ is a piecewise-constant rocket delivery rate that concentrates within each synodic planning window,
+\item $Q_{\text{surge}}$: The aggregate peak throughput sustained by 25 launch sites within a single window.
+\item $\omega(t)$: A dynamic weighting factor that adapts the logistics mix based on real-time cost, risk, and environmental feedback.
+\end{itemize}
+
+\subsubsection{Peak-to-Average Ratio (PAR) and Infrastructure Justification}
+The introduction of orbital constraints reveals a high Peak-to-Average Ratio (PAR) characteristic of the logistics system.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/pulsed_logistics_trend_fixed.png}
+\caption{Multi-scale analysis of logistics flow: Sustained elevator baseload vs. periodic rocket surge pulses.}
+\end{figure}
+
+\paragraph{Multi-Scale Analysis}
+\begin{itemize}
+\item \textbf{Macro Scale:} The 100-year trend shows a smooth transition from elevator-centric to ISRU-supported logistics, though operations remain fundamentally pulse-driven.
+\item \textbf{Micro Scale:} The space elevator maintains a steady "baseload" (blue), while the rocket fleet delivers intensive "red pulses" during TLI windows.
+\item \textbf{Engineering Necessity:} During the 3--5 day orbital windows, instantaneous loads surge to 8--10 times the mean. This high PAR necessitates 25 launch sites—not to meet average demand, but to ensure massive throughput within narrow physical windows.
+\end{itemize}
+
+\paragraph{Launch-Site Constraint: From the 10-Site Baseline to the 25-Site Recommendation}
+The problem statement specifies \textbf{10 existing Earth launch sites}. To remain faithful to the mandated comparison while still allowing actionable recommendations, we treat the number of sites $N$ in two tiers:
+\begin{itemize}[nosep]
+\item \textbf{Baseline feasibility tier ($N\le 10$):} used to evaluate the \emph{rockets-only} scenario and a strictly constrained \emph{hybrid} scenario under current infrastructure.
+\item \textbf{Policy/expansion tier ($N$ free):} used to determine the minimum redundancy required for survival under realistic failures.
+\end{itemize}
+Our modeling shows that while $N\le 10$ can satisfy average-year targets in nominal conditions, it \emph{cannot} provide sufficient surge throughput during narrow TLI windows nor recover from a catastrophic elevator outage (reserve exhaustion by Day 45). Consequently, we treat site expansion as a policy variable and identify $N=25$ as the \textbf{minimum viable redundancy} that restores net-positive supply (Day 82 recovery) and maintains reserves above $S_{\text{crit}}$ in failure stress tests.
+
+\subsubsection{Adaptive Regulation: Window Quota Optimization}
+The system employs a feed-forward feedback algorithm to dynamically adjust the launch quota $Q_k$ for each orbital window.
+
+\paragraph{A. Optimization Objective and Penalty Function}
+The optimal quota $Q_k$ is determined by minimizing the loss function $J_k$:
+\begin{equation}
+\min_{Q_{k}} J_{k} = \underbrace{w_{c} \cdot \text{Backlog}(k)^{2}}_{\text{Supply Deficit Penalty}} + \underbrace{w_{e} \cdot \exp(Q_{k} - Q_{\text{env}})}_{\text{Environmental Surge Penalty}}
+\end{equation}
+where \text{Backlog}($k$) is the unfulfilled logistics deficit, $Q_{\text{env}}$ is the atmospheric self-cleaning threshold, and weights $w_c, w_e$ are dynamically adjusted based on real-time elevator efficiency $\alpha(t)$.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/window_quota_optimization.png}
+\caption{Dynamic response of the quota optimization algorithm: Balancing supply urgency with environmental debt during an emergency surge.}
+\end{figure}
+
+\paragraph{B. Operational Analysis: Steady-State vs. Emergency Surge}
+\begin{itemize}
+\item \textbf{Steady-State (Windows 1--4):} When $\alpha(t)$ is stable, $w_e$ dominates, suppressing $Q_k$ below $Q_{\text{env}}$. The space elevator maintains the baseload while rockets provide minimal supplementation.
+\item \textbf{Emergency Response (Windows 5--9):} Following a simulated elevator failure at window 4, the system triggers the "Surge Protocol". $Q_k$ temporarily exceeds $Q_{\text{env}}$ to prioritize base survival, accumulating "environmental debt".
+\item \textbf{Deficit Erasure:} Leveraging the concurrency of 25 launch sites, the system erases the supply deficit within 5 windows (approx. 140 days), restoring critical material reserves.
+\end{itemize}
+\subsection{Oscillation Dynamics and Transport Stability}
+
+A critical engineering constraint often overlooked is the \textbf{Coriolis-induced transverse oscillation} of the space elevator tether. As the climber moves vertically with velocity $v_{climb}$, it exerts a lateral force that excites the tether's fundamental and higher-order vibrational modes. Uncontrolled oscillations can lead to catastrophic structural resonance or docking failures at the Gateway station.
+
+To quantify this, we introduce a \textbf{Stability Degradation Factor} $\eta_{stab}$, which models the reduction in effective throughput due to the necessity of speed throttling during high-vibration regimes:
+
+\begin{equation}
+\eta_{\text{stab}}(t) = \exp \left( -\gamma \cdot \frac{v_{\text{climb}}(t)}{v_{\text{wave}}(D)} \right)
+\end{equation}
+
+Where:
+\begin{itemize}
+\item $v_{\text{wave}} = \sqrt{\frac{T(D)}{\mu}}$ represents the transverse wave velocity, which is a function of tether tension $T$ and linear density $\mu$. It is further sensitive to orbital debris density $D(t)$ which affects structural integrity.
+\item $\gamma$ is a dimensionless damping-coupling constant determined by the active vibration suppression system.
+\end{itemize}
+
+The modified effective mass flow for the space elevator $\Phi_E'(t)$ is thus defined as:
+\begin{equation}
+\Phi_E'(t) = \Phi_E \cdot \alpha(t) \cdot \eta_{\text{stab}}(t)
+\end{equation}
+
+This dynamic constraint creates a "soft bottleneck" for the elevator. When $\eta_{stab}$ drops during periods of high orbital turbulence or rapid supply surges, the system must rely on the \textbf{25 rocket launchpads} to compensate for the throttled elevator capacity, ensuring the 100-million-ton target remains achievable within the 60-year window.
+\vspace{-10px}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/tether_stability_tradeoff.png}
+\caption{As elevator climber velocity increases, the tether stability factor $\eta_{stab}$ decays (blue curve). This forces a compensatory surge in rocket capacity (red dashed curve) to maintain the required mass flow, justifying the necessity of the 25-pad infrastructure.}
+\label{fig:stability_tradeoff}
+\end{figure}
+\vspace{-10px}
+\subsection{Environmental Feedback: Non-linear Debris-Launch Coupling}
+To ensure space sustainability, we model the negative externalities of high-frequency launches on the space elevator's operational environment via a second-order feedback loop.
+\vspace{-10px}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/debris_feedback_loop.png}
+\caption{Kessler Dynamics and the Adaptive Launch Throttle: Preventing debris density from exceeding the safety threshold through active frequency regulation.}
+\end{figure}
+\vspace{-10px}
+\paragraph{Kessler Dynamics Equation}
+The debris density $D(t)$ evolves according to the following differential equation:
+\begin{equation}
+\frac{\mathrm{d}D(t)}{\mathrm{d}t} = \sigma D(t) + \gamma [N f(t)]^2 - \zeta R_{\text{tech}}(t)
+\end{equation}
+where:
+\begin{itemize}
+\item $\sigma D(t)$: Self-proliferation driven by the Kessler effect.
+\item $\gamma [N f(t)]^2$: Quadratic collision probability proportional to total launch frequency.
+\item $\zeta R_{\text{tech}}$: Mitigation through active debris removal technology.
+\end{itemize}
+
+\paragraph{Closed-Loop Impact}
+This "self-crippling" mechanism directly modulates elevator availability $\alpha(t)$. As illustrated in Figure 13, our model detects threshold-approaching debris density and triggers an \textbf{Adaptive Launch Throttle}. By sacrificing short-term rocket frequency and transitioning toward lunar ISRU reliance, the system successfully decelerates debris growth, extending the elevator's 60-year operational lifespan.
+\subsection{Stochastic Process: Discrete Scrub Modeling}
+To ensure engineering fidelity, we model actual throughput as a discrete event flow with stochastic noise:
+\begin{equation}
+\Phi_{R}^{\text{actual}}(t) = \sum_{k=1}^{n(t)} P \cdot X_{k}
+\end{equation}
+where $X_{k} \sim \text{Bernoulli}(1 - p_{\text{scrub}})$ and $p_{\text{scrub}} \sim \mathcal{N}(0.16, 0.05^2)$ reflects historical scrub rates.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/risk_optimization.png}
+\caption{Monte Carlo resilience testing: System stability under stochastic scrub fluctuations.}
+\end{figure}
+
+\textbf{Robustness:} 1,000 Monte Carlo iterations show that even with $p_{\text{scrub}}$ at 25\%, the 25-site infrastructure maintains a $>95\%$ on-time delivery rate, validating the strategic necessity of our capacity buffer.
+\section{System Resilience: Extreme Failure Stress Test}
+This chapter evaluates the system's survival boundaries against "black swan" events. Specifically, we quantify the dynamic compensation provided by the 25 launch sites during a simulated catastrophic failure of the space elevator.
+
+\subsection{Dynamics of Supply Depletion}
+Post-failure ($t > t_{fail}$), the lunar material reserve $S(t)$ evolves as:
+\begin{equation}
+\frac{\mathrm{d}S(t)}{\mathrm{d}t} = \Phi_R(t) + \Phi_{\text{ISRU}}(t) - \Omega (t)
+\end{equation}
+where $\Phi_R(t)$ is the rocket resupply rate and $\Phi_{\text{ISRU}}(t)$ is the lunar in-situ resource output.
+
+At the instant of failure, the system enters an \textbf{accumulation deficit} as $(\Phi_R + \Phi_{\text{ISRU}}) < \Omega$. Without rapid intervention, reserves $S(t)$ deplete toward the critical survival threshold $S_{\text{crit}}$.
+\subsection{Surge Response: Heaviside Step Activation}
+To mitigate catastrophic failure, the 25 launch sites execute a transition from "steady-state" to "overclocked" mode. This mobilization is modeled as a sequence of Heaviside step functions with activation delays $\Delta t$:
+\begin{equation}
+\Phi_{R}^{\text{surge}}(t) = \sum_{i=1}^{N_{\text{pads}}} H(t - t_{\text{fail}} - \Delta t_{i}) \cdot \text{Cap}_{i,\max}
+\end{equation}
+where $N_{\text{pads}} = 25$. Activation lags $\Delta t_{i}$ are distributed between 5 and 45 days, simulating a realistic global emergency mobilization cycle.
+
+\subsection{Resilience Analysis: The 82-Day Survival Window}
+System resilience is defined by the pivot point $t^*$ where the reserve rate $\frac{\mathrm{d}S}{\mathrm{d}t}$ returns to positive, halting the supply "bleed."
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/resilience_hardcore_analysis.png}
+\caption{Resilience stress test: The 82-day recovery trajectory enabled by 25-site surge capacity.}
+\end{figure}
+
+\paragraph{Simulation Insights}
+Numerical analysis yields the following conclusions:
+\begin{itemize}
+\item \textbf{Pivot Point (Day 82):} Under full mobilization of 25 sites, the total supply rate surpasses consumption 82 days post-failure.
+\item \textbf{Inventory Safety:} Minimum reserves remain 15\% above the critical threshold $S_{\text{crit}}$, validating the "1-25-60 Strategy."
+\item \textbf{Infrastructure Threshold:} Comparative modeling shows that with only 10 sites, reserves would exhaust by Day 45, leading to total base collapse. This confirms $N=25$ as the minimum viable redundancy for survival.
+\end{itemize}
+
+\subsection{Conclusion: Redundancy as a "Safety Metric"}
+This chapter demonstrates the resilience essence of the "1-25-60 Strategy." System safety does not depend on its efficiency in the "normal state," but on the minimum survival probability $P_{\text{survival}}$ after losing a core asset:
+\[
+P_{\text{survival}} = P\left(\min_{t}S(t) > S_{\text{crit}}\right) > 99.5\%
+\]
+This strategy of hedging temporal risk (elevator rupture) with spatial redundancy (25 launch sites) is the sole underlying logic for the long-term survival of extraterrestrial civilization.
+\section{Infrastructure and Policy Recommendations}
+This chapter translates simulation results into engineering metrics to provide quantitative guidance for the 100-million-ton Earth-Moon mandate.
+
+\subsection{The "1-25-60 Strategy": Safety Metrics and Rigidity}
+We propose the \textbf{``1-25-60 Strategy''} as the baseline for global infrastructure planning, evaluated via the \textbf{Safety Factor ($S_f$)}:
+\begin{equation}
+S_f(t) = \frac{\Phi_{\text{surge}}(N)}{\Omega(t) - \Phi_{\text{ISRU}}(t)} \geq 1.2
+\end{equation}
+\begin{itemize}
+\item \textbf{Redundancy Threshold:} With $N=25$, the system maintains $S_f \approx 1.25$. Reducing $N$ to 15 drops $S_f < 0.8$, rendering the rocket fleet incapable of halting material deficit divergence during elevator failures.
+\item \textbf{Duration Rigidity:} The 60-year horizon minimizes \textbf{Cumulative Environmental Debt (CED)}. Simulations confirm that $T < 45$ years causes CED to exceed stratospheric cleaning capacity by 1.5x, risking irreversible climate feedback.
+\end{itemize}
+
+\subsection{ISRU Decoupling: Transition to Lunar Self-Sufficiency}
+Strategic deployment of In-Situ Resource Utilization (ISRU) is imperative to decouple lunar growth from Earth-side logistics stress.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/isru_sensitivity_analysis_fixed_v4.png}
+\caption{ISRU sensitivity analysis: Impact of lunar self-sufficiency on Earth-Moon launch demand.}
+\end{figure}
+\paragraph{Chart Analysis and Policy Implications:}
+\begin{enumerate}
+\item \textbf{Water as the Primary Priority (Phase I):} Water is the fundamental resource for both survival and fuel production. The extraction efficiency of lunar South Pole ice, denoted by $\Gamma_w(t)$, must follow a logistic growth model:
+\[
+\Gamma_w(t) = \frac{\Gamma_{\text{max}}}{1 + \mathrm{e}^{-0.25(t - 12)}} \quad (t=0 \text{ corresponds to } 2050)
+\]
+This mandates the completion of the first-phase polar ice mining infrastructure by 2062, thereby liberating over $40\%$ of rocket payload capacity for the transport of structural materials.
+\item \textbf{Structural Materials Relay (Phase II):} Subsequent initiation of metal extraction from lunar regolith follows. As illustrated, the onset of Phase III marks a fundamental transition from an ``Earth-dependent'' to a ``lunar self-sustaining'' system, reducing long-term transportation costs $P_{\text{eco}}$ by more than $45\%$.
+\end{enumerate}
+\subsection{Annual Water Supply Requirement and Logistics Impact}
+Water demand is a binding constraint for life support and propellant production in the early colony stage.
+We estimate an annual gross water requirement of $3.6\times10^{5}$ metric tons for a fully inhabited settlement, and adopt a closed-loop target exceeding $90\%$ recovery, yielding a net Earth-supplied requirement of approximately $3.6\times10^{4}$ metric tons/year.
+With a per-launch payload of 100--150 metric tons \cite{spacex_starship}, this corresponds to roughly 240--360 dedicated launches per year.
+
+Over the 60-year construction horizon delivering $\sim10^{8}$ metric tons, the average baseline transport rate is $\sim1.67\times10^{6}$ metric tons/year.
+Thus, water resupply represents about $2.2\%$ of the annual transported mass and does not shift the Pareto-optimal ``1--25--60'' strategy.
+In our hybrid architecture, this incremental demand is preferentially routed through the rocket surge channel (window-pulsed deliveries), preserving elevator baseload capacity for bulk structural materials and maintaining the original cost--time--environment trade-offs.
+
+
+\subsection{Governance: Environmental Debt and Debris Feedback}
+To ensure orbital sustainability, we propose a regulatory framework centered on a \textbf{Debris Resilience Coefficient}:
+\begin{itemize}
+\item \textbf{Dynamic Quota Control:} Launch frequency $f(t)$ must be capped to maintain a net-cleaning equilibrium, where $\frac{\mathrm{d}D}{\mathrm{d}t} < 0$.
+\item \textbf{Compensatory Funding:} A portion of the operational revenue from the 25 sites should be earmarked for Active Debris Removal (ADR), mitigating the long-term risk index $P_{\text{risk}}$.
+\end{itemize}
+
+\section{Conclusion}
+This study demonstrates that the fundamental challenge of Earth-Moon logistics is the system’s capacity for \textbf{pulsed, peak demand} rather than total mass volume.
+
+The proposed \textbf{1-25-60 Strategy} provides a robust solution: amortizing environmental pressure over 60 years, leveraging the redundancy of 25 launch sites to insure against failure, and pivoting toward ISRU for supply chain closure. This 380,000-kilometer logistics network is not merely an engineering feat but the foundational infrastructure required for the enduring survival of a multi-planetary civilization.
+\section{Strengths and Weaknesses}
+
+\subsection{Strengths}
+\begin{itemize}
+\item \textbf{Methodological Depth:} We integrate diverse mathematical frameworks—including Wright’s Law, differential equations, and Monte Carlo simulations—to capture the non-linear dynamics of Earth-Moon logistics.
+\item \textbf{Data-Driven Calibration:} Key parameters, such as rocket cost evolution and debris growth, are calibrated using high-fidelity sources including SpaceX historical records and ESA debris projections.
+\item \textbf{Strategic Innovation:} The proposed "baseline--compensation" dual-mode system led to the optimized "1-25-60 Strategy," offering a robust blueprint for high-mass orbital transport.
+\item \textbf{Engineering Fidelity:} By incorporating rigid constraints like TLI orbital windows and "black swan" stress tests (e.g., tether rupture), the model demonstrates high resilience and practical engineering realism.
+\end{itemize}
+
+\subsection{Weaknesses and Future work}
+\begin{itemize}
+\item \textbf{Linear Technology Assumption:} The model assumes a steady technological progression (e.g., constant learning rates), potentially overlooking disruptive "leapfrog" innovations in propulsion or materials.
+\item \textbf{Simplified Geopolitical Factors:} Our analysis treats global launch sites as a unified entity, ignoring potential geopolitical friction or regulatory barriers that could impede the 25-site coordination.
+\item \textbf{Lunar-Side Logistics Bottlenecks:} While Earth-to-Moon transport is modeled in depth, the internal distribution network within the lunar surface is simplified, which may underestimate the complexity of final-mile delivery.
+\end{itemize}
+\nocite{*}
+
+\begin{multicols}{2}
+\printbibliography  % 打印引用文献列表
+\end{multicols}
+\section{The One Page Letter}
+\begin{memo}[Strategic Recommendation for Lunar Logistics]
+Dear Director,
+
+Our analysis shows that the 100-million-ton lunar mandate can best be achieved using a dynamic hybrid strategy. Single-mode solutions are cost-prohibitive or vulnerable. We propose the "Steady-State and Pulsed" (1-25-60) Framework to optimize the 60-year construction timeline.
+
+\section*{I. Hybrid Mandate Necessity}
+Simulations indicate that only a hybrid system is feasible:
+\begin{itemize}
+\item \textbf{Rocket-Only:} Costs exceed \$22T with severe environmental impacts.
+\item \textbf{Elevator-Only:} High vulnerability; one debris strike causes a 2-year blackout.
+\item \textbf{Synergy:} Combines elevator efficiency with rocket resilience.
+\end{itemize}
+
+\section*{II. Core Framework: "Steady-State \& Pulsed" Logistics}
+\paragraph{1. Space Elevator (Continuous Baseload)}
+Handles 70--80% of bulk cargo (537k MT/year), optimized for low-acceleration materials like fuel and construction modules.
+
+\paragraph{2. Rocket Fleet (Adaptive Pulse)}
+Acts as a safety valve. 25 launch sites cover 20--30\% of cargo. If the elevator fails, the fleet guarantees 82 days of survival. Current 10-site infrastructure runs out of reserves by Day 45, requiring expansion.
+
+\paragraph{3. Roadmap}
+\begin{itemize}
+\item \textbf{Phase I (2050--2070):} Elevator deployment + 15 launch sites.
+\item \textbf{Phase II (2070--2110):} Expansion to 25 sites + ISRU integration.
+\end{itemize}
+
+\section*{III. Sustainable Resource Management}
+To meet the 360k MT water demand, we transition from Earth-reliance to lunar-cycle:
+\begin{itemize}
+\item \textbf{Closed-Loop:} Target \( >90\% \) recovery, reducing Earth-replenishment to 36k MT/year.
+\item \textbf{Precision Delivery:} High-frequency water pulses via optimal rocket windows.
+\end{itemize}
+
+\section*{IV. System Resilience}
+\begin{enumerate}
+\item \textbf{Dynamic Quotas:} Throttle launches to prevent exceeding debris thresholds.
+\item \textbf{Active Defense:} Real-time monitoring for debris avoidance.
+\item \textbf{Adaptive Logic:} Rebalance logistics based on cost, risk, and data.
+\end{enumerate}
+
+\section*{V. Projected Outcomes}
+\begin{itemize}
+\item \textbf{Budget Efficiency:} \$17.26T total cost (20\% savings vs. rocket-only).
+\item \textbf{Sustainability:} 29.2\% reduction in lifecycle carbon footprint.
+\item \textbf{Reliability:} System success rate \(>99.5\%\).
+\end{itemize}
+
+\section*{VI. Conclusion}
+The "Steady-State and Pulsed" framework optimizes both pragmatism and resilience, ensuring a sustainable multi-planetary future.
+
+Further details and appendices are attached for review.
+
+\end{memo}
+\appendix
+\section{AI Use Report}
+
+Team Control Number: 202600126\\
+
+To enhance the quality of non‑native language expression in academic writing, our research team employed AI technology during the competition.\\
+
+However, prior to using AI tools, all outputs underwent multiple layers of human review to ensure they meet academic standards. Furthermore, to guarantee the compliance of technology usage, we first established a relatively complete thinking framework and guided the AI to generate content through carefully crafted prompts. Throughout the process, we strictly adhered to research ethics to ensure there was no misuse of AI technology.\\
+
+This report will now provide a detailed introduction to the scope, manner, and our supervision of AI usage.\\
+
+\begin{table}[htbp]
+\centering
+\caption{Overview of AI Tools Usage}
+\label{tab:ai_usage_overview}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.15\textwidth}>{\raggedright\arraybackslash}p{0.15\textwidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Task Phase} & \textbf{AI Tool Used} & \textbf{Purpose} & \textbf{Human Oversight \& Action} \\
+\midrule
+Conceptual Exploration \& Ideation & ChatGPT-4 & 
+Brainstorm comparative dimensions between space-elevator and rocket-only logistics; generate initial hybrid-strategy analogies (e.g., ``baseload-peak'' from power-grid management).
+& 
+Filtered, combined, and critically refined suggestions; final ``1-25-60'' framework and its mathematical formulation are original synthesis.
+\\
+\addlinespace
+Code Generation \& Algorithm Implementation & ChatGPT-4 + GitHub Copilot & 
+Generate Python/Matlab code snippets for: (1) Logistic-curve fitting of rocket-cadence data; (2) Monte-Carlo simulation of scrub-rate variability; (3) Numerical integration of the pulsed-logistics model.
+& 
+Validated all code logic, adjusted parameters, and embedded snippets into larger self-written simulation pipeline. No code used without thorough testing.
+\\
+\addlinespace
+Parameter \& Data Sourcing & ChatGPT-4 with Web-Browsing & 
+Retrieve reference values for: (1) Per-capita water consumption in closed-loop life-support systems; (2) ESA's 2025 debris-growth projections; (3) Wright's Law learning-rate ranges for aerospace.
+& 
+Cross-checked AI-sourced data against primary sources; made conservative adjustments where necessary.
+\\
+\addlinespace
+Mathematical Formulation \& Verification & ChatGPT-4 & 
+Check dimensional consistency of the pulse-integral and the oscillation-induced throughput-loss factor; suggest compact LaTeX notation for matrix-based constraints.
+& 
+Independently derived every equation; AI served only as syntax and consistency checker. All physical interpretations are original.
+\\
+\addlinespace
+Visualization \& Diagram Design & ChatGPT-4 & 
+Advise on chart types for multi-scale logistics flow and propose color scheme for the GSSI ``L-curve'' figures.
+& 
+Implemented visuals using own data and software (Python/Matplotlib), modifying AI suggestions to match narrative.
+\\
+\addlinespace
+Manuscript Polishing & Grammarly + DeepL Write & 
+Improve sentence fluency, correct grammatical errors, and ensure consistent academic tone.
+& 
+Reviewed every AI-edited sentence; no change accepted that altered technical meaning or strategic emphasis.
+\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Specific Example of AI Assistance: Water Demand Estimation\\
+
+We queried ChatGPT‑4 for "per‑capita water consumption in a closed‑loop lunar habitat." It provided a range of 300–400 liters/person/day from recent space‑life‑support literature. We then converted this into an annual mass estimate (360 ktons/year) and integrated it as a Tier‑2 cargo flow into our logistics model.\\
+
+Statement of Human Team Contribution  \\
+
+All core intellectual work—problem framing, model design, mathematical derivation, strategic optimization, interpretation of results, and final recommendations—was independently conceived, carried out, and verified by our team.  \\
+AI tools served solely as efficiency accelerators and catalysts for critical thinking; they did not generate key ideas, perform independent analysis, or make decisions.  \\
+The “1-25-60” strategy, the dynamic hybrid logistics model, resilience stress‑testing, and the policy roadmap are entirely original human contributions.\\
+
+We affirm the accuracy and completeness of this report.\\
+
+\end{document}  % 文档结束
