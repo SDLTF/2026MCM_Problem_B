@@ -1,0 +1,48 @@
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Background}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Restatement of the Problem}{3}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Analysis of the Problem}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Foundational Assumptions}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Description of Key Parameters}{4}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Definition of Key Parameters}{4}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Parameter Estimation and Calibration}{4}{subsubsection.2.2.2}%
+\contentsline {section}{\numberline {3}Data Processing and Parameter Estimation}{6}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Rocket Efficiency: Technology Maturity Model Based on Logistic growth fitting}{6}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}Data Sources and Processing}{6}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}Logistic growth Fitting}{6}{subsubsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.2}Economic Equilibrium: Wright's Law and Environmental Tax}{7}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Learning Curve and Marginal Cost (Wright's Law)}{7}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}Non-linear Environmental Penalty Model}{7}{subsubsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.3}Space Elevator Degradation: Environmental Feedback Loop}{7}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}Impact of the Kessler Syndrome}{8}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.2}Efficiency Decay Equation}{8}{subsubsection.3.3.2}%
+\contentsline {paragraph}{Divergent Trend Analysis}{8}{equation.6}%
+\contentsline {subsection}{\numberline {3.4}Reliability and Risk Parameter Calibration}{8}{subsection.3.4}%
+\contentsline {section}{\numberline {4}The Integrated Logistics Model: A Collaborative Dynamic Framework}{9}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Dual-Mode Synergy \& Logic}{9}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Mathematical Formulation: Coupling Discrete Pulses and Continuous Flow}{9}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Physical Bottlenecks and Hard Constraints}{10}{subsection.4.3}%
+\contentsline {subsubsection}{\numberline {4.3.1}Orbital Windows and Discretized Queuing Pressure}{10}{subsubsection.4.3.1}%
+\contentsline {subsubsection}{\numberline {4.3.2}Node Storage and Buffering Dynamics}{10}{subsubsection.4.3.2}%
+\contentsline {subsubsection}{\numberline {4.3.3}Payload Tolerance Classification}{10}{subsubsection.4.3.3}%
+\contentsline {subsection}{\numberline {4.4}Simulation Results: Pulsed Logistics and "Crossover Point" Analysis}{11}{subsection.4.4}%
+\contentsline {paragraph}{Analysis and Insights}{11}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Environmental \& Economic Optimization: Finding the Global Optimum}{11}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Optimization Objectives and Metrics}{11}{subsection.5.1}%
+\contentsline {paragraph}{Normalization and weighting.}{12}{subsection.5.1}%
+\contentsline {paragraph}{Weight sensitivity (``not a tuned score'').}{12}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}The "L-Curve" and Strategic Optimization}{12}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Long-Term Degradation: The Limits of Extension}{12}{subsection.5.3}%
+\contentsline {paragraph}{Analysis and Insights}{14}{figure.caption.12}%
+\contentsline {subsection}{\numberline {5.4}Environmental Impact Comparison Across Scenarios}{14}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Environmental Trade-off Analysis}{14}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Establishment of the "1-25-60 Strategy"}{15}{subsection.5.6}%
+\contentsline {section}{\numberline {6}Model Refinement}{15}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Adaptive Pulsed Logistics: Macro Trends and Micro Windows}{15}{subsection.6.1}%
+\contentsline {subsubsection}{\numberline {6.1.1}Mathematical Description of Pulse Dynamics}{16}{subsubsection.6.1.1}%
+\contentsline {subsubsection}{\numberline {6.1.2}Peak-to-Average Ratio (PAR) and Infrastructure Justification}{16}{subsubsection.6.1.2}%
+\contentsline {paragraph}{Multi-Scale Analysis}{16}{figure.caption.14}%
+\contentsline {paragraph}{Launch-Site Constraint: From the 10-Site Baseline to the 25-Site Recommendation}{17}{figure.caption.14}%
+\contentsline {subsubsection}{\numberline {6.1.3}Adaptive Regulation: Window Quota Optimization}{17}{subsubsection.6.1.3}%
+\contentsline {paragraph}{A. Optimization Objective and Penalty Function}{17}{subsubsection.6.1.3}%
+\contentsline {paragraph}{B. Operational Analysis: Steady-State vs. Emergency Surge}{17}{figure.caption.15}%
